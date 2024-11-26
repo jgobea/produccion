@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Muelle Pesquero</title>
+</head>
+<body>
+    <header>
+        <a href="" class="logo">
+            <img src="assets/images/pez.png" alt="logo">
+            <h2>MUELLE PESQUERO</h2>
+        </a>
+        <nav>
+            <a href="">COMPRAR</a>
+            <a href="">DASHBOARD</a>
+            <a href="">RELLENO</a>
+        </nav>
+    </header>
+    <form class="formulario">
+        <label for="codigo">Código:</label>
+        <input type="text" id="codigo" name="codigo" required placeholder="Ingrese codigo SKU">
+        
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required disabled placeholder="Especie">
+        
+        <label for="kg">Peso:</label>
+        <input type="number" id="kg" name="kg" min="0" required placeholder="Ingrese Peso en Kg">
+        
+        <button type="submit" class="btn-info">Enviar</button>
+    </form>
+    <script src="scriptbase.js"></script>
+    <div class="hero">
+        <h1><p>REGISTRO</p><p>ULTIMOS 10 LOTES</p></h1>
+    </div>
+    <table class="tabla-produccion"> 
+        <thead> 
+            <tr> 
+                <th>Lote</th> 
+                <th>Codigo</th> 
+                <th>Especie</th> 
+                <th>Cantidad</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+            </tr> 
+        </thead> 
+        <tbody> 
+            <tr> 
+                <td></td>
+                <td></td> 
+                <td></td>
+                <td></td>
+                <td></td> 
+                <td></td>
+            </tr> 
+            <tr> 
+                <td></td>
+                <td></td> 
+                <td></td>
+                <td></td>
+                <td></td> 
+                <td></td>
+            </tr> 
+        </tbody> 
+    </table>
+</body>
+</html>
