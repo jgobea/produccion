@@ -92,3 +92,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Obtener el checkbox principal 
+const mainCheckbox = document.getElementById('seleccionar-todo'); 
+
+// Obtener todos los checkboxes secundarios 
+const subCheckboxes = document.querySelectorAll('.mandar'); 
+
+// Agregar un evento al checkbox principal 
+mainCheckbox.addEventListener('change', function() { 
+    // Cambiar el estado de todos los checkboxes secundarios 
+    subCheckboxes.forEach(function(checkbox) { 
+        checkbox.checked = mainCheckbox.checked; 
+    });
+});

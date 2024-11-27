@@ -165,9 +165,11 @@ nav a{
 #proc {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     border: 2px solid white;
+    color: grey;
     border-radius: 5px;
     height: 40px;
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: lighter;
 }
 
 .modal {
