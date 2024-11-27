@@ -6,14 +6,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let especies = [];
 
     // Función para cargar los datos de la API
+
+
+    // Función para cargar los datos de la API
     const cargarEspecies = async () => {
         console.log('Cargando datos de la API');
+        const url = 'http://localhost:5001/Api/pescados';
+        const options = {
+            method: 'GET',
+        };
         try {
-            const response = await fetch('https://6a75-168-194-111-17.ngrok-free.app/API/pescados');
+            const response = await fetch(url, options);
             if (!response.ok) { throw new Error('Error al obtener productos'); }
             const datos = await response.json();
             console.log(datos);
-            if (data.status === 200) {
+            if (datos.status === 200) {
                 especies = datos.data.map(item => ({
                     sku: item.codigo_pescado,
                     nombre: item.pescado
@@ -25,9 +32,35 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error al hacer la solicitud a la API:', error);
         }
     };
+    cargarEspecies();
 
-    // Llamar a la función para cargar los datos
-    cargarEspecies(); 
+    const enviarDatos = async (id, codigo_pescado, pescado, peso_pescado) => {
+        const url = 'http://localhost:5001/Api/pescados';
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: id,
+                codigo_pescado: codigo_pescado,
+                pescado : pescado,
+                peso_pescado: peso_pescado
+            })
+        };
+        try {
+            const response = await fetch(url, options);
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Datos enviados correctamente:', data);
+            } else {
+                console.error('Error al enviar los datos:', data);
+            }
+        } catch (error) {
+            console.error('Error al hacer la solicitud de POST:', error);
+        }
+    };
+
 
     codigoInput.addEventListener('input', () => {
         const sku = codigoInput.value;
@@ -59,31 +92,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-var modal = document.getElementById("enviado"); 
-
-var btn = document.getElementById("confirmar-lote"); 
-
-var span = document.getElementsByClassName("close")[0]; 
-
-btn.onclick = function() { 
-    modal.style.display = "block"; 
-    setTimeout(function() { 
-        modal.querySelector('.modal-content').classList.add('show'); 
-    }, 10); // Breve retraso para permitir la transición 
-} 
-
-span.onclick = function() { 
-    modal.style.display = "none"; 
-    setTimeout(function() { 
-        modal.style.display = "none"; 
-    }, 500); // Coincide con la duración de la transición 
-} 
-
-window.onclick = function(event) { 
-    if (event.target == modal) { 
-        modal.querySelector('.modal-content').classList.remove('show'); 
-        setTimeout(function() { modal.style.display = "none"; 
-        }, 500); // Coincide con la duración de la transición 
-        } 
-    }
