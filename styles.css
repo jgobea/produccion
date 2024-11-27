@@ -86,6 +86,10 @@ nav a{
     color: white;
 }
 
+.select {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
 .formulario label {
     font-weight: 600;
 }
@@ -132,4 +136,78 @@ nav a{
 
 .tabla-produccion tr:hover {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+#seleccionar-todo {
+    width: 30px;
+    margin-top: 40px;
+    margin-left: 450px;
+}
+
+#confirmar-lote {
+    background-color: rgb(86, 127, 230);
+    overflow: hidden;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: white;
+    margin-left: 400px;
+    width: 150px;
+    height: 60px;
+    font-size: 20px;
+    border-radius: 25px;
+    border: 3.5px solid white;
+    transition: all 0.2s;
+}
+
+#confirmar-lote:hover {
+    background-color: rgb(150, 200, 230);
+}
+
+#proc {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border: 2px solid white;
+    border-radius: 5px;
+    height: 40px;
+    font-size: 15px;
+}
+
+.modal {
+    display: none; /* Oculto por defecto */ 
+    position: fixed; /* Fijado en la pantalla */ 
+    z-index: 1; /* Se muestra sobre otros elementos */ 
+    left: 0; 
+    top: 0; 
+    width: 100%; /* Ancho completo */ 
+    height: 100%; /* Altura completa */ 
+    overflow: auto; /* Habilitar scroll si es necesario */ 
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content { 
+    background-color: #fefefe; 
+    margin: 15% auto; /* Centrando el contenido del modal */ 
+    padding: 20px; 
+    border: 1px solid #888; 
+    width: 80%; /* Ancho del contenido del modal */ 
+    position: relative;
+    top: -50%;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+}
+
+.modal-content.show { 
+    top: 0; /* Mueve el modal al centro */ 
+    opacity: 1; /* Hacer visible el modal */ 
+}
+
+.close { 
+    color: #aaa; 
+    float: right; 
+    font-size: 28px; 
+    font-weight: bold; 
+}
+
+.close:hover, .close:focus { 
+    color: black; 
+    text-decoration: none; 
+    cursor: pointer; 
 }

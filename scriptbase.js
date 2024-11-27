@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cargarEspecies = async () => {
         console.log('Cargando datos de la API');
         try {
-            const response = await fetch('https://1582-190-120-250-84.ngrok-free.app/API/pescados');
+            const response = await fetch('https://6a75-168-194-111-17.ngrok-free.app/API/pescados');
             if (!response.ok) { throw new Error('Error al obtener productos'); }
             const datos = await response.json();
             console.log(datos);
@@ -59,3 +59,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+var modal = document.getElementById("enviado"); 
+
+var btn = document.getElementById("confirmar-lote"); 
+
+var span = document.getElementsByClassName("close")[0]; 
+
+btn.onclick = function() { 
+    modal.style.display = "block"; 
+    setTimeout(function() { 
+        modal.querySelector('.modal-content').classList.add('show'); 
+    }, 10); // Breve retraso para permitir la transición 
+} 
+
+span.onclick = function() { 
+    modal.style.display = "none"; 
+    setTimeout(function() { 
+        modal.style.display = "none"; 
+    }, 500); // Coincide con la duración de la transición 
+} 
+
+window.onclick = function(event) { 
+    if (event.target == modal) { 
+        modal.querySelector('.modal-content').classList.remove('show'); 
+        setTimeout(function() { modal.style.display = "none"; 
+        }, 500); // Coincide con la duración de la transición 
+        } 
+    }
