@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Muelle Pesquero</title>
+</head>
+<body>
+    <header>
+        <a href="" class="logo">
+            <img src="assets/images/pez.png" alt="logo">
+            <h2>MUELLE PESQUERO</h2>
+        </a>
+        <nav>
+            <a href="">COMPRAR</a>
+            <a href="">DASHBOARD</a>
+            <a href="">RELLENO</a>
+            <div class="dropdown">
+            <button class="dropbtn">PRODUCCIÓN</button>
+            <img src="assets/images/chevron-down-solid.svg" alt="Descripción del SVG" width="100" height="100">
+            <i class="fa-solid fa-chevron-down"></i>
+                <div class="menu-desplegable">
+                    <a href="formulario.html">FORMULARIO</a>
+                    <a href="registro.html">REGISTRO</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="hero">
+        <h1><p>FORMULARIO</p></h1>
+    </div>
+    <form class="formulario">
+        <label for="codigo">Código:</label>
+        <input type="text" id="codigo" name="codigo" required placeholder="Ingrese codigo SKU">
+        
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required disabled placeholder="Especie">
+        
+        <label for="kg">Peso:</label>
+        <input type="number" id="kg" name="kg" min="0" required placeholder="Ingrese Peso en Kg">
+
+        <label for="proc">Tipo de procesado:</label>
+        <select id="proc" name ="proc">
+            <option value="opcion1">Procesado</option>
+            <option value="opcion2">Congelado</option>
+            <option value="opcion3">Fresco</option>
+        </select>
+        
+        <button type="submit" class="btn-info">Enviar</button>
+    </form>
+</body>
+</html>

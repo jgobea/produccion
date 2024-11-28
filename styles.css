@@ -213,3 +213,44 @@ nav a{
     text-decoration: none; 
     cursor: pointer; 
 }
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: rgb(106, 147, 250);
+    color: white;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-desplegable {
+    display: none; /* Inicialmente oculto */
+    position: absolute;
+    background-color: rgb(106, 147, 250);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: -50px;
+}
+
+.menu-desplegable a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: all 0.2s;
+}
+
+.menu-desplegable a:hover {
+    background-color: rgb(150, 200, 230);
+}
+
+.dropdown:hover .menu-desplegable {
+    display: block;
+}
+
