@@ -19,8 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(datos);
             if (datos.status === 200) {
                 especies = datos.data.map(item => ({
+                    id : item.id,
                     sku: item.codigo_pescado,
-                    nombre: item.pescado
+                    nombre: item.pescado,
+                    peso: item.peso_pescado
                 }));
             } else {
                 console.error('Error al cargar los datos de la API');
@@ -31,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     cargarEspecies();
 
+    // Función para enviar los datos a la API
     const enviarDatos = async (id, codigo_pescado, pescado, peso_pescado) => {
         const url = 'http://localhost:5001/Api/pescados';
         const options = {
@@ -59,6 +62,48 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
+    const editarPesoPescado = async (id, codigo_pescado, pescado, peso_pescado) => {
+        const url = `http://localhost:5001/Api/pescados/${id}`;
+        
+        try {
+            // Obtener el peso actual del pescado
+            const responseGet = await fetch(url, { method: 'GET' });
+
+            if (!responseGet.ok) { throw new Error('Error al obtener el peso actual del pescado'); }
+            const dataGet = await responseGet.json();
+            console.log('Datos obtenidos correctamente:', dataGet);
+            const pesoActual = dataGet.data.peso_pescado;
+            console.log('Peso actual:', pesoActual);
+
+            // Sumar el nuevo peso al peso actual
+            const nuevoPeso = pesoActual + peso_pescado;
+            console.log('Nuevo peso:', nuevoPeso);
+
+            // Enviar la solicitud PUT con el nuevo peso
+            const optionsPut = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    codigo_pescado: codigo_pescado,
+                    pescado: pescado,
+                    peso_pescado: nuevoPeso
+                })
+            };
+            const responsePut = await fetch(url, optionsPut);
+            const dataPut = await responsePut.json();
+            if (responsePut.ok) {
+                console.log('Peso actualizado correctamente:', dataPut);
+            } else {
+                console.error('Error al actualizar el peso:', dataPut);
+            }
+        } catch (error) {
+            console.error('Error al hacer la solicitud de PUT:', error);
+        }
+    };
+
     codigoInput.addEventListener('input', () => {
         const sku = codigoInput.value;
         const especie = especies.find(e => e.sku === sku);
@@ -84,8 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!skuExistente) {
             alert(`No existe el SKU: ${sku}`);
         } else {
+            id = skuExistente.id;
+            console.log(id);
             alert('Formulario enviado correctamente');
-            // Aquí puedes agregar la lógica para guardar el formulario
+            editarPesoPescado(id,sku,nombre,kg);
         }
     });
 });
