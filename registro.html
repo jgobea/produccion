@@ -31,49 +31,31 @@
         <h1><p>REGISTRO</p><p>ULTIMOS 10 LOTES</p></h1>
     </div>
     <input type="checkbox" id="seleccionar-todo">Seleccionar todo</input> 
-    <button id="confirmar-lote">Confirmar</button>
+    <button id="btnEnviar">Confirmar</button>
+    <button id="btnRechazar">Cancelar</button>
     <div id="enviado" class="modal"> 
         <div class="modal-content"> 
             <span class="close">&times;</span> 
             <p>Se han enviado los lotes de pescado</p> 
         </div> 
     </div>
-    <table class="tabla-produccion"> 
-        <thead> 
-            <tr> 
-                <th>Lote</th> 
-                <th>Codigo</th> 
-                <th>Especie</th> 
-                <th>Cantidad</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Procesado</th>
-                <th>Mandar</th>
-            </tr> 
-        </thead> 
-        <tbody> 
-            <tr> 
-                <td></td>
-                <td></td> 
-                <td></td>
-                <td></td>
-                <td></td> 
-                <td></td>
-                <td></td>
-                <td><input type = "checkbox" class="mandar"></td>
-            </tr> 
-            <tr> 
-                <td></td>
-                <td></td> 
-                <td></td>
-                <td></td>
-                <td></td> 
-                <td></td>
-                <td></td>
-                <td><input type = "checkbox" class="mandar"></td>
-            </tr> 
-            <script src="scriptbase.js"></script>
-        </tbody> 
+    <table id="miTabla" class="tabla-produccion"> 
+        <thead>
+            <tr>
+                <th>Seleccionar</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Peso</th>
+                <th>Fecha de Llegada</th>
+                <th>Fecha de Vencimiento</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Las filas nuevas se añadirán aquí -->
+        </tbody>
     </table>
+    
+    <script src="script2.js"></script>
+    
 </body>
 </html>

@@ -52,7 +52,7 @@ nav a{
     color: white;
     text-align: center;
     gap: 20px;
-    padding: 70px;
+    padding: 50px;
     margin: 0 3px;
 }
 
@@ -144,7 +144,7 @@ nav a{
     margin-left: 450px;
 }
 
-#confirmar-lote {
+#btnEnviar {
     background-color: rgb(86, 127, 230);
     overflow: hidden;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -158,10 +158,27 @@ nav a{
     transition: all 0.2s;
 }
 
-#confirmar-lote:hover {
+#btnEnviar:hover {
     background-color: rgb(150, 200, 230);
 }
 
+#btnRechazar {
+    background-color: rgb(86, 127, 230);
+    overflow: hidden;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: white;
+    margin-left: 400px;
+    width: 150px;
+    height: 60px;
+    font-size: 20px;
+    border-radius: 25px;
+    border: 3.5px solid white;
+    transition: all 0.2s;
+}
+
+#btnRechazar:hover {
+    background-color: rgb(150, 200, 230);
+}
 #proc {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     border: 2px solid white;

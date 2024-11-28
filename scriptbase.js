@@ -4,13 +4,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const kgInput = document.getElementById('kg');
     const formulario = document.querySelector('.formulario');
     let especies = [];
+    let datosParaTabla = [];
+    let url = 'https://1ea0-190-120-250-84.ngrok-free.app/API/pescados';
 
     // Función para cargar los datos de la API
     const cargarEspecies = async () => {
         console.log('Cargando datos de la API');
-        const url = 'http://localhost:5001/Api/pescados';
         const options = {
             method: 'GET',
+            headers: {
+                "ngrok-skip-browser-warning": "69420",
+            },
         };
         try {
             const response = await fetch(url, options);
@@ -20,9 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (datos.status === 200) {
                 especies = datos.data.map(item => ({
                     id : item.id,
-                    sku: item.codigo_pescado,
-                    nombre: item.pescado,
-                    peso: item.peso_pescado
+                    codigo_pescado: item.codigo_pescado,
+                    pescado: item.pescado,
+                    cantidad_pescado: item.cantidad_pescado,
+                    fecha_entrada: item.fecha_entrada,
+                    fecha_caducidad: item.fecha_caducidad
                 }));
             } else {
                 console.error('Error al cargar los datos de la API');
@@ -34,18 +40,19 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarEspecies();
 
     // Función para enviar los datos a la API
-    const enviarDatos = async (id, codigo_pescado, pescado, peso_pescado) => {
-        const url = 'http://localhost:5001/Api/pescados';
+    const enviarDatos = async (id, codigo_pescado, pescado, cantidad_pescado, fecha_entrada, fecha_caducidad) => {
         const options = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                "ngrok-skip-browser-warning": "69420",
             },
             body: JSON.stringify({
                 id: id,
                 codigo_pescado: codigo_pescado,
                 pescado : pescado,
-                peso_pescado: peso_pescado
+                cantidad_pescado: cantidad_pescado,
+                fecha_entrada: fecha_entrada,
+                fecha_caducidad: fecha_caducidad
             })
         };
         try {
@@ -62,53 +69,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    const editarPesoPescado = async (id, codigo_pescado, pescado, peso_pescado) => {
-        const url = `http://localhost:5001/Api/pescados/${id}`;
+    const editarPesoPescado = async (id, codigo_pescado, pescado, cantidad_pescado, fecha_entrada, fecha_caducidad) => {   
+        const nuevoElemento = {
+            "codigo_pescado": codigo_pescado,
+            "pescado": pescado,
+            "cantidad_pescado": cantidad_pescado.toString()
+        };
         
-        try {
-            // Obtener el peso actual del pescado
-            const responseGet = await fetch(url, { method: 'GET' });
-
-            if (!responseGet.ok) { throw new Error('Error al obtener el peso actual del pescado'); }
-            const dataGet = await responseGet.json();
-            console.log('Datos obtenidos correctamente:', dataGet);
-            const pesoActual = dataGet.data.peso_pescado;
-            console.log('Peso actual:', pesoActual);
-
-            // Sumar el nuevo peso al peso actual
-            const nuevoPeso = pesoActual + peso_pescado;
-            console.log('Nuevo peso:', nuevoPeso);
-
-            // Enviar la solicitud PUT con el nuevo peso
-            const optionsPut = {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: id,
-                    codigo_pescado: codigo_pescado,
-                    pescado: pescado,
-                    peso_pescado: nuevoPeso
-                })
-            };
-            const responsePut = await fetch(url, optionsPut);
-            const dataPut = await responsePut.json();
-            if (responsePut.ok) {
-                console.log('Peso actualizado correctamente:', dataPut);
-            } else {
-                console.error('Error al actualizar el peso:', dataPut);
-            }
-        } catch (error) {
-            console.error('Error al hacer la solicitud de PUT:', error);
-        }
+        datosParaTabla.push(nuevoElemento);
+        
+        // Compartir los datos con script2.js
+        window.localStorage.setItem('nuevoElementoJSON', JSON.stringify(datosParaTabla));
+        
+        console.log('Datos guardados para la tabla:', datosParaTabla);
     };
 
     codigoInput.addEventListener('input', () => {
-        const sku = codigoInput.value;
-        const especie = especies.find(e => e.sku === sku);
+        const codigo_pescado = codigoInput.value;
+        const especie = especies.find(e => e.codigo_pescado === codigo_pescado);
         if (especie) {
-            nombreInput.value = especie.nombre;
+            nombreInput.value = especie.pescado;
         } else {
             nombreInput.value = '';
         }
@@ -116,37 +96,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     formulario.addEventListener('submit', (event) => {
         event.preventDefault();
-        const nombre = nombreInput.value;
-        const sku = codigoInput.value;
+        const pescado = nombreInput.value;
+        const codigo = codigoInput.value;
         const kg = parseFloat(kgInput.value);
-        const skuExistente = especies.find(e => e.sku === sku);
+        const codigo_pescadoExistente = especies.find(e => e.codigo_pescado === codigo);
 
         if (kg < 0) {
             alert('El valor de kg no puede ser negativo');
             return;
         }
 
-        if (!skuExistente) {
-            alert(`No existe el SKU: ${sku}`);
+        if (!codigo_pescadoExistente) {
+            alert(`No existe el codigo_pescado: ${codigo_pescado}`);
         } else {
-            id = skuExistente.id;
+            id = codigo_pescadoExistente.id;
             console.log(id);
             alert('Formulario enviado correctamente');
-            editarPesoPescado(id,sku,nombre,kg);
+            editarPesoPescado(id,codigo,pescado,kg,"2024-12-21T04:00:00.000Z","2025-01-23T04:00:00.000Z");
         }
-    });
-});
-
-// Obtener el checkbox principal 
-const mainCheckbox = document.getElementById('seleccionar-todo'); 
-
-// Obtener todos los checkboxes secundarios 
-const subCheckboxes = document.querySelectorAll('.mandar'); 
-
-// Agregar un evento al checkbox principal 
-mainCheckbox.addEventListener('change', function() { 
-    // Cambiar el estado de todos los checkboxes secundarios 
-    subCheckboxes.forEach(function(checkbox) { 
-        checkbox.checked = mainCheckbox.checked; 
     });
 });
