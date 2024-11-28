@@ -6,9 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let especies = [];
 
     // Función para cargar los datos de la API
-
-
-    // Función para cargar los datos de la API
     const cargarEspecies = async () => {
         console.log('Cargando datos de la API');
         const url = 'http://localhost:5001/Api/pescados';
