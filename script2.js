@@ -3,13 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = [];
     let nextId = 1;
     const nuevoElementoJSON = localStorage.getItem('nuevoElementoJSON') || '[]';
-  
-    const calcularFechaVencimiento = (fechaInicio, meses) => {
-      const fecha = new Date(fechaInicio);
-      fecha.setMonth(fecha.getMonth() + meses);
-      return fecha.toLocaleDateString();
-    };
-  
+
     const agregarFila = (elemento) => {
       const nuevaFila = tabla.insertRow();
       const celdaCheckbox = nuevaFila.insertCell(0);
@@ -23,18 +17,122 @@ document.addEventListener('DOMContentLoaded', () => {
       checkbox.type = 'checkbox';
       celdaCheckbox.appendChild(checkbox);
   
-      const fechaLlegada = new Date().toLocaleDateString();
-      const fechaVencimiento = calcularFechaVencimiento(new Date(), 6);
+      // Formatear la fecha actual con la parte horaria a las 00:00:00
+      const fechaActual = new Date();
+      fechaActual.setUTCHours(4, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to zero
+      const fechaLlegada = fechaActual.toISOString();
+      
+      // Calcular y formatear la fecha de vencimiento con la parte horaria
+      const fechaVenc = new Date(fechaActual);
+      fechaVenc.setMonth(fechaVenc.getMonth() + 6);
+      const fechaVencimiento = fechaVenc.toISOString();
   
       celdaCodigo.textContent = elemento.codigo_pescado;
       celdaNombre.textContent = elemento.pescado;
       celdaPeso.textContent = elemento.cantidad_pescado;
-      celdaFechaLlegada.textContent = fechaLlegada;
-      celdaFechaVencimiento.textContent = fechaVencimiento;
+      // Mostrar solo la parte de fecha en la tabla
+      celdaFechaLlegada.textContent = new Date(fechaLlegada).toLocaleDateString();
+      celdaFechaVencimiento.textContent = new Date(fechaVencimiento).toLocaleDateString();
+      
+      // Guardar las fechas completas como atributos de datos
+      nuevaFila.dataset.fechaLlegada = fechaLlegada;
+      nuevaFila.dataset.fechaVencimiento = fechaVencimiento;
     };
     const elementos = JSON.parse(nuevoElementoJSON);
     elementos.forEach(agregarFila);
   
+        // Función para enviar los datos a la API
+        const enviarDatos = async () => {
+            const url = 'https://fd66-168-194-111-17.ngrok-free.app/API/pescados';
+            
+            try {
+                // Primero obtener todos los pescados existentes
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        "ngrok-skip-browser-warning": "69420",
+                    }
+                });
+                const respData = await response.json();
+                const pescadosExistentes = respData.data;
+                console.log(pescadosExistentes);
+                // Procesar cada elemento en data
+                for (const elemento of data) {
+                    console.log("siguiente elemento", elemento);
+                    console.log("codigo pescado", elemento.codigo_pescado);
+                    console.log("pescado", elemento.pescado);
+                    console.log("fecha entrada", elemento.fecha_entrada);
+                    console.log("fecha caducidad", elemento.fecha_caducidad);
+                    // Buscar si existe un pescado igual
+                    const pescadoExistente = pescadosExistentes.find(p =>
+                        
+                        p.codigo_pescado == elemento.codigo_pescado &&
+                        p.pescado == elemento.pescado &&
+                        p.fecha_entrada == elemento.fecha_entrada &&
+                        p.fecha_caducidad == elemento.fecha_caducidad
+                    );
+
+                    if (pescadoExistente) {
+                        // Si existe, actualizar con PUT
+                        console.log("si existe bro");
+                        const nuevaCantidad = parseFloat(pescadoExistente.cantidad_pescado) + parseFloat(elemento.cantidad_pescado);
+                        console.log("nueva cantidad pescado", nuevaCantidad);
+                        const responsePut = await fetch(`${url}/${pescadoExistente.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420",
+                            },
+                            body: JSON.stringify({
+                                id: pescadoExistente.id,
+                                codigo_pescado: elemento.codigo_pescado,
+                                pescado: elemento.pescado,
+                                cantidad_pescado: nuevaCantidad.toString(),
+                                fecha_entrada: elemento.fecha_entrada,
+                                fecha_caducidad: elemento.fecha_caducidad
+                            })
+                        });
+                        const dataPut = await responsePut.json();
+                        console.log('Datos actualizados correctamente:', dataPut);
+                    } else {
+                        // Si no existe, obtener el máximo ID y crear nuevo
+                        console.log("no existe bro");
+                        const maxId = Math.max(...pescadosExistentes.map(p => p.id), 0);
+                        const nuevoId = maxId + 1;
+                        
+                        const responsePost = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                "ngrok-skip-browser-warning": "69420",
+                            },
+                            body: JSON.stringify({
+                                id: nuevoId,
+                                codigo_pescado: elemento.codigo_pescado,
+                                pescado: elemento.pescado,
+                                cantidad_pescado: elemento.cantidad_pescado.toString(),
+                                fecha_entrada: elemento.fecha_entrada,
+                                fecha_caducidad: elemento.fecha_caducidad
+                            })
+                        });
+                        const dataPost = await responsePost.json();
+                        console.log('Nuevo registro creado:', dataPost);
+                        
+                        // Actualizar pescadosExistentes para el siguiente cálculo de ID
+                        pescadosExistentes.push({ ...elemento, id: nuevoId });
+                    }
+                }
+                
+                // Limpiar data después de procesar todo
+                data.length = 0;
+                
+            } catch (error) {
+                console.error('Error al procesar los datos:', error);
+                throw error;
+            }
+        };
+    
+
     // Add event listeners for the buttons
     document.getElementById('btnEnviar').addEventListener('click', () => {
         const filas = tabla.getElementsByTagName('tr');
@@ -51,8 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     codigo_pescado: fila.cells[1].textContent,
                     pescado: fila.cells[2].textContent,
                     cantidad_pescado: parseFloat(fila.cells[3].textContent),
-                    fecha_entrada: fila.cells[4].textContent,
-                    fecha_caducidad: fila.cells[5].textContent
+                    fecha_entrada: fila.dataset.fechaLlegada,
+                    fecha_caducidad: fila.dataset.fechaVencimiento
                 };
                 
                 // Check if similar item exists and combine if found
@@ -68,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     data.push(elemento);
                     nextId++; // Incrementamos el ID solo cuando se agrega un nuevo elemento
+                    console.log(data);
                 }
                 
                 filasParaEliminar.push(fila);
@@ -82,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         console.log('Datos acumulados:', data);
         // Enviar datos a la API
+        enviarDatos();
     });
 
     document.getElementById('btnRechazar').addEventListener('click', () => {

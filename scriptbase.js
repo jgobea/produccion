@@ -4,8 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const kgInput = document.getElementById('kg');
     const formulario = document.querySelector('.formulario');
     let especies = [];
-    let datosParaTabla = [];
-    let url = 'https://1ea0-190-120-250-84.ngrok-free.app/API/pescados';
+    let url = 'https://fd66-168-194-111-17.ngrok-free.app/API/ingreso/pescado';
 
     // Función para cargar los datos de la API
     const cargarEspecies = async () => {
@@ -23,13 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(datos);
             if (datos.status === 200) {
                 especies = datos.data.map(item => ({
-                    id : item.id,
                     codigo_pescado: item.codigo_pescado,
                     pescado: item.pescado,
-                    cantidad_pescado: item.cantidad_pescado,
-                    fecha_entrada: item.fecha_entrada,
-                    fecha_caducidad: item.fecha_caducidad
                 }));
+                llenarTablaReferencia();
             } else {
                 console.error('Error al cargar los datos de la API');
             }
@@ -38,34 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     cargarEspecies();
-
-    // Función para enviar los datos a la API
-    const enviarDatos = async (id, codigo_pescado, pescado, cantidad_pescado, fecha_entrada, fecha_caducidad) => {
-        const options = {
-            method: 'POST',
-            headers: {
-                "ngrok-skip-browser-warning": "69420",
-            },
-            body: JSON.stringify({
-                id: id,
-                codigo_pescado: codigo_pescado,
-                pescado : pescado,
-                cantidad_pescado: cantidad_pescado,
-                fecha_entrada: fecha_entrada,
-                fecha_caducidad: fecha_caducidad
-            })
-        };
-        try {
-            const response = await fetch(url, options);
-            const data = await response.json();
-            if (response.ok) {
-                console.log('Datos enviados correctamente:', data);
-            } else {
-                console.error('Error al enviar los datos:', data);
-            }
-        } catch (error) {
-            console.error('Error al hacer la solicitud de POST:', error);
-        }
+    // Función para llenar la tabla de referencia
+    const llenarTablaReferencia = () => {
+        const tbody = document.getElementById('tabla-especies');
+        especies.forEach(especie => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${especie.codigo_pescado}</td>
+                <td>${especie.pescado}</td>
+            `;
+            tbody.appendChild(tr);
+        });
     };
 
 
@@ -73,15 +52,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const nuevoElemento = {
             "codigo_pescado": codigo_pescado,
             "pescado": pescado,
-            "cantidad_pescado": cantidad_pescado.toString()
+            "cantidad_pescado": cantidad_pescado.toString(),
+            "fecha_entrada": fecha_entrada,
+            "fecha_caducidad": fecha_caducidad
         };
         
-        datosParaTabla.push(nuevoElemento);
+        // Obtener elementos existentes del localStorage
+        const elementosExistentes = JSON.parse(localStorage.getItem('nuevoElementoJSON') || '[]');
         
-        // Compartir los datos con script2.js
-        window.localStorage.setItem('nuevoElementoJSON', JSON.stringify(datosParaTabla));
+        // Agregar el nuevo elemento
+        elementosExistentes.push(nuevoElemento);
         
-        console.log('Datos guardados para la tabla:', datosParaTabla);
+        // Guardar el array actualizado en localStorage
+        localStorage.setItem('nuevoElementoJSON', JSON.stringify(elementosExistentes));
+        
+        console.log('Datos guardados para la tabla:', elementosExistentes);
     };
 
     codigoInput.addEventListener('input', () => {

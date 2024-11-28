@@ -76,11 +76,14 @@ nav a{
     display: flex;
     flex-direction: column;
     gap: 10px;
+    font-size: clamp(12px, 1.5vw, 18px);
     background-color: rgb(106, 147, 250);
-    padding: 20px;
+    padding: 10px;
     border: 3.5px solid white;
     border-radius: 15px;
-    max-width: 400px;
+    width: min(70%, 400px);
+    min-height: 250px;
+    height: auto;
     margin: 20px auto;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: white;
@@ -88,6 +91,9 @@ nav a{
 
 .select {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    width: 100%;
+    padding: 8px;
+    font-size: clamp(14px, 2vw, 20px);
 }
 
 .formulario label {
@@ -95,10 +101,17 @@ nav a{
 }
 
 .formulario input {
-    padding: 10px;
+    width: 100%;
+    padding: 6px;
+    height: clamp(25px, 5vh, 40px);
+    font-size: clamp(14px, 2vw, 20px);
     border: 2px solid white;
     border-radius: 5px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.formulario input::placeholder {
+    font-size: clamp(14px, 2vw, 20px);
 }
 
 .formulario input:focus {
@@ -140,16 +153,14 @@ nav a{
 
 #seleccionar-todo {
     width: 30px;
-    margin-top: 40px;
-    margin-left: 450px;
 }
 
 #btnEnviar {
-    background-color: rgb(86, 127, 230);
+    background-color: green;
     overflow: hidden;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: white;
-    margin-left: 400px;
+    margin-left: 20px;
     width: 150px;
     height: 60px;
     font-size: 20px;
@@ -163,11 +174,11 @@ nav a{
 }
 
 #btnRechazar {
-    background-color: rgb(86, 127, 230);
+    background-color: red;
     overflow: hidden;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: white;
-    margin-left: 400px;
+    margin-left: 20px;
     width: 150px;
     height: 60px;
     font-size: 20px;
@@ -271,3 +282,56 @@ nav a{
     display: block;
 }
 
+.checkbox-y-confirmar-y-rechazar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto;
+}
+
+.contenedor-principal {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.tabla-referencia {
+    width: 300px;
+    margin: 0;
+    border-collapse: collapse;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: rgb(106, 147, 250);
+    color: white;
+    border: 3.5px solid white;
+    border-radius: 15px;
+    overflow: hidden;
+    height: fit-content;
+}
+
+.tabla-referencia th, .tabla-referencia td {
+    padding: 10px;
+    border: 2px solid white;
+    text-align: center;
+}
+
+.tabla-referencia th {
+    background-color: rgb(86, 127, 230);
+    font-weight: 600;
+}
+
+.tabla-referencia tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tabla-referencia tr:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Modificar el estilo existente del formulario para que se ajuste al nuevo layout */
+.formulario {
+    margin: 0;
+    width: 400px;
+}
