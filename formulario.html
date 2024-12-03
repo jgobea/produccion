@@ -44,6 +44,26 @@
         </table>
 
         <form class="formulario">
+            <label for="orden">Orden de Pesca:</label>
+            <select id="orden" name="orden" required>
+                <option value="">Seleccione una orden</option>
+                <!-- Se llenará dinámicamente -->
+            </select>
+
+            <label for="proceso">Proceso:</label>
+            <select id="proceso" name="proceso" required>
+                <option value="">Seleccione un proceso</option>
+                <option value="Fresco">Fresco</option>
+                <option value="Congelado">Congelado</option>
+                <option value="Salado">Salado</option>
+            </select>
+
+            <label for="embarcacion">Embarcación:</label>
+            <select id="embarcacion" name="embarcacion" required>
+                <option value="">Seleccione una embarcación</option>
+                <!-- Se llenará dinámicamente -->
+            </select>
+
             <label for="codigo">Código:</label>
             <input type="text" id="codigo" name="codigo" required placeholder="Ingrese codigo del pescado">
             

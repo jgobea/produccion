@@ -4,7 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const kgInput = document.getElementById('kg');
     const formulario = document.querySelector('.formulario');
     let especies = [];
-    let url = 'https://fd66-168-194-111-17.ngrok-free.app/API/ingreso/pescado';
+    let url = 'https://cd48-200-8-185-118.ngrok-free.app/API/ingreso/pescado';
+
+    // URL para obtener las embarcaciones (ajusta según tu API)
+    const urlEmbarcaciones = 'tu_url_api/embarcaciones';
+
+    // URL para obtener las órdenes de pesca (ajusta según tu API)
+    const urlOrdenes = 'tu_url_api/ordenes';
 
     // Función para cargar los datos de la API
     const cargarEspecies = async () => {
@@ -47,6 +53,67 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Función para cargar las embarcaciones
+    const cargarEmbarcaciones = async () => {
+        const selectEmbarcacion = document.getElementById('embarcacion');
+        
+        const options = {
+            method: 'GET',
+            headers: {
+                "ngrok-skip-browser-warning": "69420",
+            },
+        };
+
+        try {
+            const response = await fetch(urlEmbarcaciones, options);
+            if (!response.ok) throw new Error('Error al obtener embarcaciones');
+            
+            const datos = await response.json();
+            if (datos.status === 200) {
+                datos.data.forEach(embarcacion => {
+                    const option = document.createElement('option');
+                    option.value = embarcacion.id;
+                    option.textContent = embarcacion.nombre; // Ajusta según la estructura de tus datos
+                    selectEmbarcacion.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Error al cargar embarcaciones:', error);
+        }
+    };
+
+    // Función para cargar las órdenes de pesca
+    const cargarOrdenes = async () => {
+        const selectOrden = document.getElementById('orden');
+        
+        const options = {
+            method: 'GET',
+            headers: {
+                "ngrok-skip-browser-warning": "69420",
+            },
+        };
+
+        try {
+            const response = await fetch(urlOrdenes, options);
+            if (!response.ok) throw new Error('Error al obtener órdenes');
+            
+            const datos = await response.json();
+            if (datos.status === 200) {
+                datos.data.forEach(orden => {
+                    const option = document.createElement('option');
+                    option.value = orden.id;
+                    option.textContent = `Orden #${orden.id} - ${orden.fecha}`; // Ajusta según la estructura de tus datos
+                    selectOrden.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Error al cargar órdenes:', error);
+        }
+    };
+
+    // Llamar a las funciones para cargar los datos
+    cargarOrdenes();
+    cargarEmbarcaciones();
 
     const editarPesoPescado = async (id, codigo_pescado, pescado, cantidad_pescado, fecha_entrada, fecha_caducidad) => {   
         const nuevoElemento = {

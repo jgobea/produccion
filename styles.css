@@ -119,77 +119,6 @@ nav a{
     border-color: rgba(255, 255, 255, 0.8);
 }
 
-.tabla-produccion {
-    width: 100%;
-    max-width: 800px;
-    margin: 20px auto;
-    border-collapse: collapse;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    background-color: rgb(106, 147, 250);
-    color: white;
-    border: 3.5px solid white;
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-.tabla-produccion th, .tabla-produccion td {
-    padding: 10px;
-    border: 2px solid white;
-    text-align: center;
-}
-
-.tabla-produccion th {
-    background-color: rgb(86, 127, 230);
-    font-weight: 600;
-}
-
-.tabla-produccion tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.tabla-produccion tr:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-#seleccionar-todo {
-    width: 30px;
-}
-
-#btnEnviar {
-    background-color: green;
-    overflow: hidden;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    color: white;
-    margin-left: 20px;
-    width: 150px;
-    height: 60px;
-    font-size: 20px;
-    border-radius: 25px;
-    border: 3.5px solid white;
-    transition: all 0.2s;
-}
-
-#btnEnviar:hover {
-    background-color: rgb(150, 200, 230);
-}
-
-#btnRechazar {
-    background-color: red;
-    overflow: hidden;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    color: white;
-    margin-left: 20px;
-    width: 150px;
-    height: 60px;
-    font-size: 20px;
-    border-radius: 25px;
-    border: 3.5px solid white;
-    transition: all 0.2s;
-}
-
-#btnRechazar:hover {
-    background-color: rgb(150, 200, 230);
-}
 #proc {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     border: 2px solid white;
@@ -198,48 +127,6 @@ nav a{
     height: 40px;
     font-size: 14px;
     font-weight: lighter;
-}
-
-.modal {
-    display: none; /* Oculto por defecto */ 
-    position: fixed; /* Fijado en la pantalla */ 
-    z-index: 1; /* Se muestra sobre otros elementos */ 
-    left: 0; 
-    top: 0; 
-    width: 100%; /* Ancho completo */ 
-    height: 100%; /* Altura completa */ 
-    overflow: auto; /* Habilitar scroll si es necesario */ 
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content { 
-    background-color: #fefefe; 
-    margin: 15% auto; /* Centrando el contenido del modal */ 
-    padding: 20px; 
-    border: 1px solid #888; 
-    width: 80%; /* Ancho del contenido del modal */ 
-    position: relative;
-    top: -50%;
-    opacity: 0;
-    transition: all 0.5s ease-in-out;
-}
-
-.modal-content.show { 
-    top: 0; /* Mueve el modal al centro */ 
-    opacity: 1; /* Hacer visible el modal */ 
-}
-
-.close { 
-    color: #aaa; 
-    float: right; 
-    font-size: 28px; 
-    font-weight: bold; 
-}
-
-.close:hover, .close:focus { 
-    color: black; 
-    text-decoration: none; 
-    cursor: pointer; 
 }
 
 .dropdown {
@@ -257,7 +144,7 @@ nav a{
 }
 
 .menu-desplegable {
-    display: none; /* Inicialmente oculto */
+    display: none;
     position: absolute;
     background-color: rgb(106, 147, 250);
     min-width: 160px;
@@ -280,13 +167,6 @@ nav a{
 
 .dropdown:hover .menu-desplegable {
     display: block;
-}
-
-.checkbox-y-confirmar-y-rechazar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px auto;
 }
 
 .contenedor-principal {
@@ -330,8 +210,22 @@ nav a{
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Modificar el estilo existente del formulario para que se ajuste al nuevo layout */
 .formulario {
     margin: 0;
     width: 400px;
+}
+
+.formulario select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.formulario select:focus {
+    outline: none;
+    border-color: rgb(106, 147, 250);
+    box-shadow: 0 0 5px rgba(106, 147, 250, 0.3);
 }

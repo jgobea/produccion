@@ -7,11 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const agregarFila = (elemento) => {
       const nuevaFila = tabla.insertRow();
       const celdaCheckbox = nuevaFila.insertCell(0);
-      const celdaCodigo = nuevaFila.insertCell(1);
-      const celdaNombre = nuevaFila.insertCell(2);
-      const celdaPeso = nuevaFila.insertCell(3);
-      const celdaFechaLlegada = nuevaFila.insertCell(4);
-      const celdaFechaVencimiento = nuevaFila.insertCell(5);
+      const celdaOrden = nuevaFila.insertCell(1);
+      const celdaEmbarcacion = nuevaFila.insertCell(2);
+      const celdaProceso = nuevaFila.insertCell(3);
+      const celdaCodigo = nuevaFila.insertCell(4);
+      const celdaNombre = nuevaFila.insertCell(5);
+      const celdaPeso = nuevaFila.insertCell(6);
+      const celdaFechaLlegada = nuevaFila.insertCell(7);
+      const celdaFechaVencimiento = nuevaFila.insertCell(8);
   
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -27,6 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
       fechaVenc.setMonth(fechaVenc.getMonth() + 6);
       const fechaVencimiento = fechaVenc.toISOString();
   
+      celdaOrden.textContent = elemento.orden || '';
+      celdaEmbarcacion.textContent = elemento.embarcacion || '';
+      celdaProceso.textContent = elemento.proceso || '';
       celdaCodigo.textContent = elemento.codigo_pescado;
       celdaNombre.textContent = elemento.pescado;
       celdaPeso.textContent = elemento.cantidad_pescado;
@@ -43,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
         // Función para enviar los datos a la API
         const enviarDatos = async () => {
-            const url = 'https://fd66-168-194-111-17.ngrok-free.app/API/pescados';
+            const url = 'https://cd48-200-8-185-118.ngrok-free.app/API/pescados';
             
             try {
                 // Primero obtener todos los pescados existentes
