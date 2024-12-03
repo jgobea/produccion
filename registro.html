@@ -8,26 +8,21 @@
     <title>Muelle Pesquero</title>
 </head>
 <body>
-    <header>
-        <a href="" class="logo">
-            <img src="assets/images/pez.png" alt="logo">
-            <h2>MUELLE PESQUERO</h2>
+    <header id='cabecero'>
+        <a href="/" id='logo'>
+          <img src="./assets/images/pez.png" alt="Muelle pesquero"/>
+          <h1>MUELLE PESQUERO</h1>
         </a>
-        <nav>
-            <a href="">COMPRAR</a>
-            <a href="">DASHBOARD</a>
-            <a href="">RELLENO</a>
-            <div class="dropdown">
-            <button class="dropbtn">PRODUCCIÓN</button>
-            <img src="assets/images/chevron-down-solid.svg" alt="Descripción del SVG" width="15" height="15">
-            <i class="fa-solid fa-chevron-down"></i>
-                <div class="menu-desplegable">
-                    <a href="formulario.html">FORMULARIO</a>
-                    <a href="registro.html">REGISTRO</a>
-                </div>
-            </div>
-        </nav>
     </header>
+    <nav id="navbar">
+        <ul>
+            <li>INICIO</li>
+            <li>CATÁLOGO</li>
+            <li>NOSOTROS</li>
+            <li>CONTACTO</li>
+            <li>PERFIL</li>
+        </ul>
+    </nav>
     <div class="hero">
         <h1><p>REGISTRO</p><p>DE LOTES</p></h1>
     </div>
@@ -45,12 +40,12 @@
         <thead>
             <tr>
                 <th>Seleccionar</th>
-                <th>Orden</th>
                 <th>Embarcación</th>
                 <th>Proceso</th>
                 <th>Código</th>
                 <th>Nombre</th>
                 <th>Peso</th>
+                <th>Estado</th>
                 <th>Fecha de Llegada</th>
                 <th>Fecha de Vencimiento</th>
             </tr>
@@ -59,7 +54,58 @@
             <!-- Las filas nuevas se añadirán aquí -->
         </tbody>
     </table>
-    
+    <footer>
+        <div class="apartado">
+          <h4>CONTACTO</h4>
+          <h5>DIRECCIÓN</h5>
+          <h6>Aquí no sé qué poner porque no tenemos direccion en este momento.
+            Pero ponle que estamos en puerto cabello, por ahi pues. Esto es relleno.</h6>
+          <a href="" class='link'>
+            <i class="bi bi-envelope-fill"></i>
+            Enviar un e-mail
+          </a>
+          <a href="" class='link'>
+            <i class="bi bi-whatsapp"></i>
+            +58 412-4755652
+          </a>
+          <a href="" class='link'>
+            <i class="bi bi-telephone-fill"></i>
+            04124755652
+          </a>
+        </div>
+
+        <div class="apartado">
+          <h4>PERFIL</h4>
+          <div id="perfil">
+            <a href="">
+              <i class="bi bi-caret-right-fill"></i>
+              Iniciar Sesión
+            </a>
+            <a href="">
+              <i class="bi bi-caret-right-fill"></i>
+              Registrarse
+            </a>
+            <a href="">
+              <i class="bi bi-caret-right-fill"></i>
+              Perfil
+            </a>
+            <a href="">
+              <i class="bi bi-caret-right-fill"></i>
+              Carrito
+            </a>
+          </div>
+        </div>
+
+        <div class="apartado">
+          <h4>MÉTODOS DE PAGO SEGURO</h4>
+          <div class="pagos">
+            <img src="assets/images/visa.jpg" alt="visa"/>
+            <img src="assets/images/master.jpg" alt="mastercard"/>
+            <img src="assets/images/american.jpg" alt="american express"/>
+          </div>
+          <h6>Tarjeta de crédito, Pago por Whatsapp, Link de pago, Transferencia, Contra Entrega.</h6>
+        </div>
+    </footer>
     <script src="script2.js"></script>
     
 </body>
