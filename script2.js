@@ -5,44 +5,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const nuevoElementoJSON = localStorage.getItem('nuevoElementoJSON') || '[]';
 
     const agregarFila = (elemento) => {
-      const nuevaFila = tabla.insertRow();
-      const celdaCheckbox = nuevaFila.insertCell(0);
-      const celdaOrden = nuevaFila.insertCell(1);
-      const celdaEmbarcacion = nuevaFila.insertCell(2);
-      const celdaProceso = nuevaFila.insertCell(3);
-      const celdaCodigo = nuevaFila.insertCell(4);
-      const celdaNombre = nuevaFila.insertCell(5);
-      const celdaPeso = nuevaFila.insertCell(6);
-      const celdaFechaLlegada = nuevaFila.insertCell(7);
-      const celdaFechaVencimiento = nuevaFila.insertCell(8);
-  
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      celdaCheckbox.appendChild(checkbox);
-  
-      // Formatear la fecha actual con la parte horaria a las 00:00:00
-      const fechaActual = new Date();
-      fechaActual.setUTCHours(4, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to zero
-      const fechaLlegada = fechaActual.toISOString();
-      
-      // Calcular y formatear la fecha de vencimiento con la parte horaria
-      const fechaVenc = new Date(fechaActual);
-      fechaVenc.setMonth(fechaVenc.getMonth() + 6);
-      const fechaVencimiento = fechaVenc.toISOString();
-  
-      celdaOrden.textContent = elemento.orden || '';
-      celdaEmbarcacion.textContent = elemento.embarcacion || '';
-      celdaProceso.textContent = elemento.proceso || '';
-      celdaCodigo.textContent = elemento.codigo_pescado;
-      celdaNombre.textContent = elemento.pescado;
-      celdaPeso.textContent = elemento.cantidad_pescado;
-      // Mostrar solo la parte de fecha en la tabla
-      celdaFechaLlegada.textContent = new Date(fechaLlegada).toLocaleDateString();
-      celdaFechaVencimiento.textContent = new Date(fechaVencimiento).toLocaleDateString();
-      
-      // Guardar las fechas completas como atributos de datos
-      nuevaFila.dataset.fechaLlegada = fechaLlegada;
-      nuevaFila.dataset.fechaVencimiento = fechaVencimiento;
+        const nuevaFila = tabla.insertRow();
+        const celdaCheckbox = nuevaFila.insertCell(0);
+        const celdaEmbarcacion = nuevaFila.insertCell(1);
+        const celdaProceso = nuevaFila.insertCell(2);
+        const celdaCodigo = nuevaFila.insertCell(3);
+        const celdaNombre = nuevaFila.insertCell(4);
+        const celdaPeso = nuevaFila.insertCell(5);
+        const celdaEstado = nuevaFila.insertCell(6);
+        const celdaFechaLlegada = nuevaFila.insertCell(7);
+        const celdaFechaVencimiento = nuevaFila.insertCell(8);
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        celdaCheckbox.appendChild(checkbox);
+
+        // Formatear la fecha actual con la parte horaria a las 00:00:00
+        const fechaActual = new Date();
+        fechaActual.setUTCHours(0, 0, 0, 0);
+        const fechaLlegada = fechaActual.toISOString();
+        
+        // Calcular fecha de vencimiento según el estado
+        const fechaVenc = new Date(fechaActual);
+        if (elemento.estado === 'Congelado') {
+            fechaVenc.setMonth(fechaVenc.getMonth() + 6); // 6 meses para congelado
+        } else if (elemento.estado === 'Fresco') {
+            fechaVenc.setDate(fechaVenc.getDate() + 2); // 2 días para fresco
+        }
+        const fechaVencimiento = fechaVenc.toISOString();
+
+        celdaEmbarcacion.textContent = elemento.embarcacion || '';
+        celdaProceso.textContent = elemento.proceso || '';
+        celdaCodigo.textContent = elemento.codigo_pescado;
+        celdaNombre.textContent = elemento.pescado;
+        celdaPeso.textContent = elemento.cantidad_pescado;
+        celdaEstado.textContent = elemento.estado || '';
+        celdaFechaLlegada.textContent = new Date(fechaLlegada).toLocaleDateString();
+        celdaFechaVencimiento.textContent = new Date(fechaVencimiento).toLocaleDateString();
+        
+        // Guardar las fechas completas como atributos de datos
+        nuevaFila.dataset.fechaLlegada = fechaLlegada;
+        nuevaFila.dataset.fechaVencimiento = fechaVencimiento;
     };
     const elementos = JSON.parse(nuevoElementoJSON);
     elementos.forEach(agregarFila);
