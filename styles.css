@@ -137,6 +137,15 @@ nav a{
     flex-direction: column;
 }
 
+.fila-centrada { 
+    justify-content: center; 
+} 
+
+.campo-centrado { 
+    flex: 0 1 100%; 
+    max-width: 250px;
+}
+
 .select {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     width: 100%;
