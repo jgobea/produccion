@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const kgInput = document.getElementById('kg');
     const formulario = document.querySelector('.formulario');
     let especies = [];
-    let url = 'https://cd48-200-8-185-118.ngrok-free.app/API/inventario/pescado';
+    let url = 'https://cd48-200-8-185-118.ngrok-free.app/API/pescados';
 
     // URL para obtener las embarcaciones (ajusta según tu API)
-    const urlEmbarcaciones = 'tu_url_api/Embarcacion';
+    const urlEmbarcaciones = 'https://cd48-200-8-185-118.ngrok-free.app/API/Embarcacion';
 
     // Función para cargar los datos de la API
     const cargarEspecies = async () => {
