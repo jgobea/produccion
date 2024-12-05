@@ -4,10 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const kgInput = document.getElementById('kg');
     const formulario = document.querySelector('.formulario');
     let especies = [];
-    let url = 'https://cd48-200-8-185-118.ngrok-free.app/API/pescados';
+
+    let urlEspecies = 'https://8b95-190-120-250-84.ngrok-free.app/API/pescados';
+    let urlInventario = 'https://8b95-190-120-250-84.ngrok-free.app/API/inventario/pescado';
 
     // URL para obtener las embarcaciones (ajusta según tu API)
-    const urlEmbarcaciones = 'https://cd48-200-8-185-118.ngrok-free.app/API/Embarcacion';
+    const urlEmbarcaciones = 'https://8b95-190-120-250-84.ngrok-free.app/API/Embarcacion';
+
+    // Agregar variable para almacenar las embarcaciones y sus capacidades
+    let embarcaciones = [];
 
     // Función para cargar los datos de la API
     const cargarEspecies = async () => {
@@ -19,13 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
             },
         };
         try {
-            const response = await fetch(url, options);
+            const response = await fetch(urlEspecies, options);
             if (!response.ok) { throw new Error('Error al obtener productos'); }
             const datos = await response.json();
             console.log(datos);
             if (datos.status === 200) {
                 especies = datos.data.map(item => ({
-                    id: item.id,
+                    id_pescado: item.id_pescado,
                     nombre: item.nombre,
                 }));
                 llenarTablaReferencia();
@@ -43,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         especies.forEach(especie => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${especie.id}</td>
+                <td>${especie.id_pescado}</td>
                 <td>${especie.nombre}</td>
             `;
             tbody.appendChild(tr);
@@ -66,15 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Error al obtener embarcaciones');
             
             const datos = await response.json();
+            console.log(datos);
             if (datos.status === 200) {
-                // Filtrar solo las embarcaciones activas
-                const embarcacionesActivas = datos.data.filter(embarcacion => 
-                    embarcacion.estado === "activo"
+                // Filtrar solo las embarcaciones activas y guardar datos
+                embarcaciones = datos.data.filter(embarcacion => 
+                    embarcacion.estado === "Inactivo"
                 );
 
-                embarcacionesActivas.forEach(embarcacion => {
+                embarcaciones.forEach(embarcacion => {
                     const option = document.createElement('option');
-                    option.value = embarcacion.id;
+                    option.value = embarcacion.id_embarcacion;
                     option.textContent = embarcacion.nombre;
                     selectEmbarcacion.appendChild(option);
                 });
@@ -87,30 +93,54 @@ document.addEventListener('DOMContentLoaded', () => {
     // Llamar a las funciones para cargar los datos
     cargarEmbarcaciones();
 
-    const editarPesoPescado = async (id_pescado, nombre, peso, fecha_ingreso, fecha_caducidad) => {   
-        const nuevoElemento = {
-            "id_pescado": id_pescado,
-            "nombre": nombre,
-            "peso": peso.toString(),
-            "fecha_ingreso": fecha_ingreso,
-            "fecha_caducidad": fecha_caducidad
-        };
+    const subirInventario = async (id_pescado, nombre, peso, fecha_ingreso, embarcacionId, clasificacion) => {   
+        // Primero obtener todos los IDs del inventario
+        const getResponse = await fetch(urlInventario, {
+            method: 'GET',
+            headers: {
+                "ngrok-skip-browser-warning": "69420",
+            }
+        });
         
-        // Obtener elementos existentes del localStorage
-        const elementosExistentes = JSON.parse(localStorage.getItem('nuevoElementoJSON') || '[]');
+        const inventario = await getResponse.json();
+        console.log(inventario);
         
-        // Agregar el nuevo elemento
-        elementosExistentes.push(nuevoElemento);
-        
-        // Guardar el array actualizado en localStorage
-        localStorage.setItem('nuevoElementoJSON', JSON.stringify(elementosExistentes));
-        
-        console.log('Datos guardados para la tabla:', elementosExistentes);
+        // Encontrar el ID más alto y sumarle 1
+        const nuevoId = inventario.data.reduce((maxId, item) => 
+            Math.max(maxId, parseInt(item.id_lote)), 0) + 1;
+        console.log(nuevoId);
+
+        const fechaVenc = new Date(fecha_ingreso);
+        fechaVenc.setDate(fechaVenc.getDate() + 2); // 2 días para fresco
+        const fechaVencimiento = fechaVenc.toISOString();
+
+        const responsePost = await fetch(urlInventario, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "ngrok-skip-browser-warning": "69420",
+            },
+            body: JSON.stringify({
+             
+                id_pescado: id_pescado,
+                id_lote: nuevoId,
+                clasificacion: clasificacion,
+                nombre: nombre,
+                peso: peso.toString(),
+                fecha_ingreso: fecha_ingreso,
+                fecha_caducidad: fechaVencimiento,
+                estado: "nuevo",
+                proceso: "completo",
+                id_embarcacion: embarcacionId,         
+            })
+        });
+
+        console.log('Respuesta del servidor:', await responsePost.json());
     };
 
     idInput.addEventListener('input', () => {
         const id = idInput.value;
-        const especie = especies.find(e => e.id === id);
+        const especie = especies.find(e => e.id_pescado === id);
         if (especie) {
             nombreInput.value = especie.nombre;
         } else {
@@ -123,20 +153,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const nombre = nombreInput.value;
         const id = idInput.value;
         const peso = parseFloat(kgInput.value);
-        const id_pescadoExistente = especies.find(e => e.id === id);
+        const clasificacion = document.getElementById('clasificacion').value;
+        const embarcacionId = document.getElementById('embarcacion').value;
+        const id_pescadoExistente = especies.find(e => e.id_pescado === id);
+        const fecha_ingreso = new Date().toISOString();
+        // Verificar si se seleccionó una embarcación
+        if (!embarcacionId) {
+            alert('Por favor seleccione una embarcación');
+            return;
+        }
+
+        // Encontrar la embarcación seleccionada
+        const embarcacionSeleccionada = embarcaciones.find(e => e.id_embarcacion === embarcacionId);
 
         if (peso < 0) {
             alert('El valor de kg no puede ser negativo');
             return;
         }
 
+        // Verificar la capacidad de la embarcación
+        if (peso > embarcacionSeleccionada.capacidad) {
+            alert(`El peso excede la capacidad de la embarcación (${embarcacionSeleccionada.capacidad} kg)`);
+            return;
+        }
+
         if (!id_pescadoExistente) {
             alert(`No existe el codigo_pescado: ${id}`);
         } else {
-            id = id_pescadoExistente.id;
-            console.log(id);
+
+            id_pescado = id_pescadoExistente.id_pescado;
+            console.log(id_pescado);
             alert('Formulario enviado correctamente');
-            editarPesoPescado(id,nombre,peso,"2024-12-21T04:00:00.000Z","2025-01-23T04:00:00.000Z");
+            subirInventario(id_pescado, nombre, peso, fecha_ingreso, embarcacionId, clasificacion);
         }
     });
 });

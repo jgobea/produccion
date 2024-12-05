@@ -49,7 +49,7 @@
                 </div>
                 <div class="campo">
                   <label for="codigo">Código:</label>
-                  <input type="text" id="codigo" name="codigo" required placeholder="Ingrese codigo del pescado">
+                  <input type="text" id="id" name="codigo" required placeholder="Ingrese codigo del pescado">
               </div>
             </div>
 
@@ -59,25 +59,25 @@
                     <input type="text" id="nombre" name="nombre" required disabled placeholder="Especie">
                 </div>
                 <div class="campo">
-                  <label for="kg">Peso:</label>
+                  <label for="kg">Peso (kg):</label>
                   <input type="number" id="kg" name="kg" min="0" required placeholder="Ingrese Peso en Kg">
               </div>
             </div>
-            
-            <div class="fila fila-centrada">
-                <div class="campo campo-centrado">
-                    <label for="estado">Estado:</label>
-                    <select id="estado" name="estado" required>
-                    <option value="">Seleccione un estado</option>
-                    </select>                
-                </div>
+            <div class="fila-centrada">
+              <div class="campo-centrado">
+                <label for="clasificacion">Clasificación:</label>
+              <select id="clasificacion" name="clasificacion" required>
+                <option value="">Seleccione una clasificación</option>
+                <option value="peces">Peces</option>
+                <option value="moluscos">Moluscos</option>
+                <option value="crustaceos">Crustaceos</option>
+                <option value="mariscos">Mariscos</option>
+              </select>
+              </div>
             </div>
             
             <button type="submit" class="btn-info">Enviar</button>
         </form>
-        <div class="boton-navegacion">
-          <a href="registro.html">Ver registro</a>
-    </div>
     </div>
     <footer>
         <div class="apartado">

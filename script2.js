@@ -1,8 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
     const tabla = document.getElementById('miTabla').getElementsByTagName('tbody')[0];
-    const data = [];
-    let nextId = 1;
-    const nuevoElementoJSON = localStorage.getItem('nuevoElementoJSON') || '[]';
+
+    // Función para crear un dropdown de estado
+    const crearDropdownEstado = () => {
+        const select = document.createElement('select');
+        select.className = 'estado-dropdown';
+        ['congelado', 'fresco'].forEach(estado => {
+            const option = document.createElement('option');
+            option.value = estado;
+            option.textContent = estado;
+            select.appendChild(option);
+        });
+        return select;
+    };
+
+    // Función para crear un dropdown de proceso basado en la clasificación
+    const crearDropdownProceso = (clasificacion) => {
+        const select = document.createElement('select');
+        select.className = 'proceso-dropdown';
+        
+        const procesos = clasificacion === "peces" 
+            ? ['fileteado', 'completo', 'eviscerado']
+            : ['procesado'];
+            
+        procesos.forEach(proceso => {
+            const option = document.createElement('option');
+            option.value = proceso;
+            option.textContent = proceso;
+            select.appendChild(option);
+        });
+        return select;
+    };
 
     const agregarFila = (elemento) => {
         const nuevaFila = tabla.insertRow();
@@ -15,137 +43,67 @@ document.addEventListener('DOMContentLoaded', () => {
         const celdaEstado = nuevaFila.insertCell(6);
         const celdaFechaLlegada = nuevaFila.insertCell(7);
         const celdaFechaVencimiento = nuevaFila.insertCell(8);
+        const celdaId = nuevaFila.insertCell(9);
+        const celdaClasificacion = nuevaFila.insertCell(10);
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         celdaCheckbox.appendChild(checkbox);
 
-        // Formatear la fecha actual con la parte horaria a las 00:00:00
-        const fechaActual = new Date();
-        fechaActual.setUTCHours(0, 0, 0, 0);
-        const fechaLlegada = fechaActual.toISOString();
+        celdaEmbarcacion.textContent = elemento.id_embarcacion;
         
-        // Calcular fecha de vencimiento según el estado
-        const fechaVenc = new Date(fechaActual);
-        if (elemento.estado === 'Congelado') {
-            fechaVenc.setMonth(fechaVenc.getMonth() + 6); // 6 meses para congelado
-        } else if (elemento.estado === 'Fresco') {
-            fechaVenc.setDate(fechaVenc.getDate() + 2); // 2 días para fresco
-        }
-        const fechaVencimiento = fechaVenc.toISOString();
+        // Agregar dropdown de proceso según la clasificación
+        const dropdownProceso = crearDropdownProceso(elemento.clasificacion);
+        dropdownProceso.value = elemento.proceso || 
+            (elemento.clasificacion === "peces" ? 'completo' : 'procesado');
+        celdaProceso.appendChild(dropdownProceso);
+        
+        celdaId.textContent = elemento.id_lote;
+        celdaCodigo.textContent = elemento.id_pescado;
+        celdaNombre.textContent = elemento.nombre;
+        celdaPeso.textContent = elemento.peso;
+        
+        // Agregar dropdown de estado
+        const dropdownEstado = crearDropdownEstado();
+        dropdownEstado.value = elemento.estado || 'fresco';
+        celdaEstado.appendChild(dropdownEstado);
 
-        celdaEmbarcacion.textContent = elemento.embarcacion || '';
-        celdaProceso.textContent = elemento.proceso || '';
-        celdaCodigo.textContent = elemento.codigo_pescado;
-        celdaNombre.textContent = elemento.pescado;
-        celdaPeso.textContent = elemento.cantidad_pescado;
-        celdaEstado.textContent = elemento.estado || '';
-        celdaFechaLlegada.textContent = new Date(fechaLlegada).toLocaleDateString();
-        celdaFechaVencimiento.textContent = new Date(fechaVencimiento).toLocaleDateString();
+        celdaFechaLlegada.textContent = new Date(elemento.fecha_ingreso).toLocaleDateString();
+        celdaFechaVencimiento.textContent = new Date(elemento.fecha_caducidad).toLocaleDateString();
+        celdaClasificacion.textContent = elemento.clasificacion;
         
         // Guardar las fechas completas como atributos de datos
-        nuevaFila.dataset.fechaLlegada = fechaLlegada;
-        nuevaFila.dataset.fechaVencimiento = fechaVencimiento;
+        nuevaFila.dataset.fechaLlegada = elemento.fecha_ingreso;
+        nuevaFila.dataset.fechaVencimiento = elemento.fecha_caducidad;
     };
-    const elementos = JSON.parse(nuevoElementoJSON);
-    elementos.forEach(agregarFila);
-  
-        // Función para enviar los datos a la API
-        const enviarDatos = async () => {
-            const url = 'https://cd48-200-8-185-118.ngrok-free.app/API/pescados';
-            
-            try {
-                // Primero obtener todos los pescados existentes
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        "ngrok-skip-browser-warning": "69420",
-                    }
-                });
-                const respData = await response.json();
-                const pescadosExistentes = respData.data;
-                console.log(pescadosExistentes);
-                // Procesar cada elemento en data
-                for (const elemento of data) {
-                    console.log("siguiente elemento", elemento);
-                    console.log("codigo pescado", elemento.codigo_pescado);
-                    console.log("pescado", elemento.pescado);
-                    console.log("fecha entrada", elemento.fecha_entrada);
-                    console.log("fecha caducidad", elemento.fecha_caducidad);
-                    // Buscar si existe un pescado igual
-                    const pescadoExistente = pescadosExistentes.find(p =>
-                        
-                        p.codigo_pescado == elemento.codigo_pescado &&
-                        p.pescado == elemento.pescado &&
-                        p.fecha_entrada == elemento.fecha_entrada &&
-                        p.fecha_caducidad == elemento.fecha_caducidad
-                    );
 
-                    if (pescadoExistente) {
-                        // Si existe, actualizar con PUT
-                        console.log("si existe bro");
-                        const nuevaCantidad = parseFloat(pescadoExistente.cantidad_pescado) + parseFloat(elemento.cantidad_pescado);
-                        console.log("nueva cantidad pescado", nuevaCantidad);
-                        const responsePut = await fetch(`${url}/${pescadoExistente.id}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                "ngrok-skip-browser-warning": "69420",
-                            },
-                            body: JSON.stringify({
-                                id: pescadoExistente.id,
-                                codigo_pescado: elemento.codigo_pescado,
-                                pescado: elemento.pescado,
-                                cantidad_pescado: nuevaCantidad.toString(),
-                                fecha_entrada: elemento.fecha_entrada,
-                                fecha_caducidad: elemento.fecha_caducidad
-                            })
-                        });
-                        const dataPut = await responsePut.json();
-                        console.log('Datos actualizados correctamente:', dataPut);
-                    } else {
-                        // Si no existe, obtener el máximo ID y crear nuevo
-                        console.log("no existe bro");
-                        const maxId = Math.max(...pescadosExistentes.map(p => p.id), 0);
-                        const nuevoId = maxId + 1;
-                        
-                        const responsePost = await fetch(url, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                "ngrok-skip-browser-warning": "69420",
-                            },
-                            body: JSON.stringify({
-                                id: nuevoId,
-                                codigo_pescado: elemento.codigo_pescado,
-                                pescado: elemento.pescado,
-                                cantidad_pescado: elemento.cantidad_pescado.toString(),
-                                fecha_entrada: elemento.fecha_entrada,
-                                fecha_caducidad: elemento.fecha_caducidad
-                            })
-                        });
-                        const dataPost = await responsePost.json();
-                        console.log('Nuevo registro creado:', dataPost);
-                        
-                        // Actualizar pescadosExistentes para el siguiente cálculo de ID
-                        pescadosExistentes.push({ ...elemento, id: nuevoId });
-                    }
+    // Función para cargar los pescados desde la API
+    const cargarPescados = async () => {
+        const url = 'https://8b95-190-120-250-84.ngrok-free.app/API/inventario/pescado';
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    "ngrok-skip-browser-warning": "69420",
                 }
-                
-                // Limpiar data después de procesar todo
-                data.length = 0;
-                
-            } catch (error) {
-                console.error('Error al procesar los datos:', error);
-                throw error;
-            }
-        };
-    
+            });
+            const data = await response.json();
+            // Filtrar solo los pescados con estado "nuevo"
+            const pescadosNuevos = data.data.filter(pescado => pescado.estado === "nuevo");
+            pescadosNuevos.forEach(agregarFila);
+        } catch (error) {
+            console.error('Error al cargar los pescados:', error);
+        }
+    };
 
-    // Add event listeners for the buttons
-    document.getElementById('btnEnviar').addEventListener('click', () => {
+    // Cargar los pescados al iniciar
+    cargarPescados();
+
+    // Event listener para el botón Enviar
+    document.getElementById('btnEnviar').addEventListener('click', async () => {
         const filas = tabla.getElementsByTagName('tr');
         const filasParaEliminar = [];
+        const url = 'https://8b95-190-120-250-84.ngrok-free.app/API/inventario/pescado';
 
         // Collect checked rows data
         for (let i = filas.length - 1; i >= 0; i--) {
@@ -153,58 +111,103 @@ document.addEventListener('DOMContentLoaded', () => {
             const checkbox = fila.querySelector('input[type="checkbox"]');
             
             if (checkbox && checkbox.checked) {
-                const elemento = {
-                    id: nextId,
-                    codigo_pescado: fila.cells[1].textContent,
-                    pescado: fila.cells[2].textContent,
-                    cantidad_pescado: parseFloat(fila.cells[3].textContent),
-                    fecha_entrada: fila.dataset.fechaLlegada,
-                    fecha_caducidad: fila.dataset.fechaVencimiento
-                };
+                const dropdownEstado = fila.querySelector('.estado-dropdown');
+                const dropdownProceso = fila.querySelector('.proceso-dropdown');
                 
-                // Check if similar item exists and combine if found
-                const existingItem = data.find(item => 
-                    item.codigo_pescado === elemento.codigo_pescado && 
-                    item.pescado === elemento.pescado &&
-                    item.fecha_entrada === elemento.fecha_entrada &&
-                    item.fecha_caducidad === elemento.fecha_caducidad
-                );
-
-                if (existingItem) {
-                    existingItem.cantidad_pescado += elemento.cantidad_pescado;
+                // Calcular fecha de caducidad según el estado
+                const fechaIngreso = new Date(fila.dataset.fechaLlegada);
+                let fechaCaducidad = new Date(fechaIngreso);
+                
+                if (dropdownEstado.value === 'congelado') {
+                    fechaCaducidad.setMonth(fechaCaducidad.getMonth() + 4); // 4 meses después
                 } else {
-                    data.push(elemento);
-                    nextId++; // Incrementamos el ID solo cuando se agrega un nuevo elemento
-                    console.log(data);
+                    fechaCaducidad.setDate(fechaCaducidad.getDate() + 2); // 2 días después
                 }
                 
-                filasParaEliminar.push(fila);
+                const elemento = {
+                    id_pescado: fila.cells[3].textContent,
+                    id_lote: parseInt(fila.cells[9].textContent),
+                    clasificacion: fila.cells[10].textContent,
+                    nombre: fila.cells[4].textContent,
+                    peso: fila.cells[5].textContent,
+                    fecha_ingreso: fila.dataset.fechaLlegada,
+                    fecha_caducidad: fechaCaducidad.toISOString(),
+                    estado: dropdownEstado.value,
+                    proceso: dropdownProceso.value,
+                    id_embarcacion: fila.cells[1].textContent
+                };
+
+                try {
+                    // Actualizar el estado y proceso en la API
+                    const response = await fetch(`${url}/${elemento.id_lote}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "ngrok-skip-browser-warning": "69420",
+                        },
+                        body: JSON.stringify(elemento)
+                    });
+
+                    if (response.ok) {
+                        filasParaEliminar.push(fila);
+                    } else {
+                        throw new Error(`Error en la respuesta: ${response.status}`);
+                    }
+                } catch (error) {
+                    console.error('Error al actualizar:', error);
+                    alert(`Error al actualizar el pescado: ${error.message}`);
+                }
             }
         }
 
-        // Remove checked rows
+        // Eliminar las filas procesadas
         filasParaEliminar.forEach(fila => fila.remove());
         
-        // Limpiar localStorage después de procesar las filas
-        localStorage.setItem('nuevoElementoJSON', '[]');
-        
-        console.log('Datos acumulados:', data);
-        // Enviar datos a la API
-        enviarDatos();
+        // Mostrar modal de confirmación
+        document.getElementById('enviado').style.display = "block";
     });
 
-    document.getElementById('btnRechazar').addEventListener('click', () => {
+    // Event listener para el botón Rechazar
+    document.getElementById('btnRechazar').addEventListener('click', async () => {
         const filas = tabla.getElementsByTagName('tr');
+        const filasParaEliminar = [];
+        const url = 'https://8b95-190-120-250-84.ngrok-free.app/API/inventario/pescado';
+
         for (let i = filas.length - 1; i >= 0; i--) {
             const fila = filas[i];
             const checkbox = fila.querySelector('input[type="checkbox"]');
+            
             if (checkbox && checkbox.checked) {
-                fila.remove();
+                const id_lote = parseInt(fila.cells[9].textContent);
+                console.log(id_lote);
+                try {
+                    const response = await fetch(`${url}/${id_lote}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "ngrok-skip-browser-warning": "69420",
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        filasParaEliminar.push(fila);
+                    } else {
+                        throw new Error(`Error al eliminar el lote ${id_lote}: ${response.status}`);
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar:', error);
+                    alert(`Error al eliminar el lote: ${error.message}`);
+                }
             }
         }
+
+        // Eliminar las filas procesadas solo si el DELETE fue exitoso
+        filasParaEliminar.forEach(fila => fila.remove());
     });
 
-
-  
+    // Cerrar el modal
+    document.querySelector('.close').addEventListener('click', () => {
+        document.getElementById('enviado').style.display = "none";
+    });
 });
   
